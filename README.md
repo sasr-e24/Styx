@@ -8,7 +8,7 @@ unless you choose to include them.
 Logs are processed in the browser. Nothing is uploaded, and the app makes no
 requests outside its own site.
 
-**Use it:** https://sasr-e24.github.io/styx/ (once Pages is enabled, see below), or
+**Use it:** https://sasr-e24.github.io/Styx/ (once Pages is enabled, see below), or
 open `app/index.html` directly from a checkout.
 
 ## Presets
