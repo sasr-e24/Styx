@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Styx</title>
+<meta name="description" content="Share ArduPilot .bin logs without giving away tuning, sensors or hardware. Runs in your browser.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2313222D'/%3E%3Cpath d='M5 13c4-4 7 4 11 0s7 4 11 0M5 20c4-4 7 4 11 0s7 4 11 0' stroke='%236DB3D3' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <h1>Styx</h1>
+    <p>Share ArduPilot logs without giving away how the aircraft is built or tuned.</p>
+  </div>
+  <p class="local">Logs are processed in this browser. Nothing is uploaded.</p>
+</header>
+
+<main class="layout">
+  <section class="config" aria-label="What the shared log keeps">
+    <div class="block">
+      <div class="block-head">
+        <h2>Preset</h2>
+        <div class="tools">
+          <button class="link" data-action="import">Import</button>
+          <button class="link" data-action="export">Export</button>
+          <input type="file" id="import-file" accept=".json,application/json" hidden>
+        </div>
+      </div>
+      <div id="presets" class="presets"></div>
+      <div id="modified" class="modified" hidden></div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <h2>Data</h2>
+        <label class="inline"><input type="checkbox" id="primary"> First instance only</label>
+      </div>
+      <p class="hint" id="primary-hint">Keeps one GPS, one battery, one IMU. Hides how many are fitted.</p>
+      <div id="groups"></div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <h2>Parameters</h2>
+        <span class="count" id="param-count"></span>
+      </div>
+      <div id="params"></div>
+    </div>
+
+    <div class="block">
+      <div class="block-head">
+        <h2>Text messages</h2>
+        <span class="count" id="text-count"></span>
+      </div>
+      <div id="texts"></div>
+    </div>
+  </section>
+
+  <section class="output" aria-label="Logs">
+    <label id="drop" class="drop" tabindex="0">
+      <input type="file" id="file" accept=".bin,.BIN" multiple hidden>
+      <strong>Drop .bin logs here</strong>
+      <span>or click to choose files</span>
+    </label>
+    <div class="files-bar" id="files-bar" hidden>
+      <span id="files-count"></span>
+      <span class="busy" id="busy" hidden>Updating</span>
+      <div class="tools">
+        <button class="ghost" data-action="clear">Remove all</button>
+        <button data-action="download-all" id="download-all">Download all</button>
+      </div>
+    </div>
+    <div id="files"></div>
+    <p class="empty" id="empty">Load a log to see what the shared file will contain.</p>
+  </section>
+</main>
+
+<footer class="foot">
+  <p>Output is a standard DataFlash .bin log. Open one output in your log viewer before you send it.</p>
+  <p>Unmannd Autonomy Pvt. Ltd</p>
+</footer>
+
+<script src="catalog.js"></script>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+*.bin
+*.BIN
+__pycache__/
+node_modules/
