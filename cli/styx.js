@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Aditya Suresh (sasr-e24)
 // Styx command line.
 //   node cli/styx.js [--preset ID | --policy FILE.json] [--out DIR] log1.bin [log2.bin ...]
 //   node cli/styx.js --list

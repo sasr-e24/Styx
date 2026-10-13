@@ -41,6 +41,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - run: cp LICENSE THIRD_PARTY_NOTICES.md app/
       - uses: actions/upload-pages-artifact@v3
         with:
           path: app

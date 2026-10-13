@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Aditya Suresh (sasr-e24)
 """
 Writes a synthetic ArduPilot DataFlash log for tests, so CI does not need real logs.
 

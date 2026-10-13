@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Aditya Suresh (sasr-e24)
 """
 End-to-end check of the web app in headless Chromium (Playwright).
 

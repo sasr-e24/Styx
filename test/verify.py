@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Aditya Suresh (sasr-e24)
 """
 Independent check of a Styx output against its original, using pymavlink's parser.
 

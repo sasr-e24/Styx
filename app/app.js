@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Aditya Suresh (sasr-e24)
 (function () {
   'use strict';
   const C = window.StyxCatalog, E = window.StyxEngine;

@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Aditya Suresh (sasr-e24)
 """
 Builds a hostile test log from a real one, to exercise the cases SITL logs don't cover:
   - GPS records (instance 0 and a second receiver, instance 1) after every POS

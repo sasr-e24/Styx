@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Aditya Suresh (sasr-e24)
 // Preset and policy behaviour on the synthetic fixture.
 //   python3 test/make_fixture.py test/fixture.bin && node --test test/engine.test.js
 'use strict';

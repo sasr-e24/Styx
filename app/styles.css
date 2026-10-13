@@ -44,6 +44,7 @@ input[type=checkbox] { accent-color: var(--amber); width: 14px; height: 14px; ma
 .seg button[aria-pressed=true] { background: var(--amber); color: var(--amber-ink); font-weight: 600; }
 .seg button.custom { font-style: italic; }
 .tool, .go { background: #3a4046; border: 1px solid #50575e; border-radius: 4px; padding: 4px 12px; cursor: pointer; font-weight: 500; white-space: nowrap; }
+.tool { color: var(--ink); text-decoration: none; }
 .tool:hover { background: #444b52; }
 .go { background: var(--amber); border-color: var(--amber); color: var(--amber-ink); font-weight: 600; }
 .go:disabled { background: #3a4046; border-color: #50575e; color: var(--muted); cursor: default; }
@@ -138,6 +139,11 @@ summary { cursor: pointer; color: var(--ink-2); }
 .err { color: var(--warn); }
 .busy { color: var(--muted); }
 
+/* status bar */
+.status { flex: none; display: flex; align-items: center; gap: 16px; padding: 4px 12px; background: var(--chrome); border-top: 1px solid #111; color: var(--muted); font-size: 12px; }
+.status a { color: var(--ink-2); text-decoration: none; }
+.status a:hover { color: #fff; text-decoration: underline; }
+
 @media (max-width: 900px) {
   body { overflow: auto; height: auto; }
   .main { grid-template-columns: 1fr; }
@@ -145,5 +151,6 @@ summary { cursor: pointer; color: var(--ink-2); }
   .scroll { overflow: visible; }
   .grid th.share-h, .grid td.sh { display: none; }
   .bar { flex-wrap: wrap; }
+  .status { flex-wrap: wrap; }
 }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

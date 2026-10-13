@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Aditya Suresh (sasr-e24)
 /*
  * Styx catalog: which ArduPilot log messages belong to which data group, and the
  * built-in presets. Edit this file to add messages or team presets.

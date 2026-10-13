@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Aditya Suresh (sasr-e24)
 // Runs the engine off the main thread so big logs don't freeze the page.
 importScripts('catalog.js', 'engine.js');
 

@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 Aditya Suresh (sasr-e24)
 # Full check. Uses the synthetic fixture, plus any real logs you pass in.
 #   bash test/run_tests.sh [real1.bin real2.bin ...]
 # Needs: node 18+, python3, pip install pymavlink (and playwright for test/ui_test.py)

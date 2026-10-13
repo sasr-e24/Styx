@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2026 Aditya Suresh (sasr-e24)
 /*
  * Styx engine: reads an ArduPilot DataFlash .bin log and writes a new one that
  * holds only what the policy allows.

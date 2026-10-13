@@ -8,8 +8,8 @@ unless you choose to include them.
 Logs are processed in the browser. Nothing is uploaded, and the app makes no
 requests outside its own site.
 
-**Use it:** https://sasr-e24.github.io/Styx/ (once Pages is enabled, see below), or
-open `app/index.html` directly from a checkout.
+**Use it:** https://sasr-e24.github.io/Styx/, or open `app/index.html` directly from a
+checkout (works offline).
 
 ## Presets
 
@@ -66,6 +66,23 @@ battery, junk bytes with secret text) run through the customer presets.
 ## Hosting
 
 `.github/workflows/ci.yml` runs the tests on every push and deploys `app/` to GitHub
-Pages from `main` when they pass. One-time setup: repo Settings, Pages, Source:
-GitHub Actions. GitHub Pages on a private repo needs a paid GitHub plan; on the free
-plan the repo has to be public. The app is static, so any static host works too.
+Pages from `main` when they pass (Settings, Pages, Source: GitHub Actions). The
+app is static, so any static host works too.
+
+## License and terms
+
+Styx is released under the [MIT License](LICENSE).
+Copyright (c) 2026 Aditya Suresh (sasr-e24).
+
+You can use, change and share it, including in commercial work, as long as the
+copyright and license notice stay with the code. If you build on it, a mention
+of this project is appreciated.
+
+Terms of use and the privacy notice for the hosted app are in
+[`app/legal.html`](app/legal.html). Bundled fonts and test tools are listed in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). To report output that contains
+data it should not, see [SECURITY.md](SECURITY.md).
+
+Styx reads and writes the ArduPilot log format and contains no ArduPilot code.
+It is an independent project, not affiliated with or endorsed by ArduPilot.
+
