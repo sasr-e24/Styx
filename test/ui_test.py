@@ -55,12 +55,12 @@ def cli(preset):
 
 def settle(pg):
     pg.wait_for_timeout(300)
-    pg.wait_for_function("document.getElementById('busy').hidden", timeout=30000)
+    pg.wait_for_function("document.body.dataset.state == 'idle' && !document.querySelector('#tabs .dot')", timeout=60000)
 
 
 def download_first(pg):
     with pg.expect_download() as d:
-        pg.click('#files [data-action=download] >> nth=0')
+        pg.click('#panel [data-action=download]')
     p = os.path.join(tmp, 'dl_' + d.value.suggested_filename)
     d.value.save_as(p)
     return p, d.value.suggested_filename
@@ -77,8 +77,9 @@ with sync_playwright() as pw:
         pg.on('request', lambda r: foreign.append(r.url) if not r.url.startswith(URL.rsplit('/', 1)[0]) and not r.url.startswith('blob:') and not r.url.startswith('data:') else None)
         pg.goto(URL)
         pg.set_input_files('#file', logs)
-        pg.wait_for_function(f"document.querySelectorAll('#files [data-action=download]').length == {len(logs)}", timeout=60000)
+        pg.wait_for_function(f"document.querySelectorAll('#tabs .tab[data-id]').length == {len(logs)}", timeout=60000)
         settle(pg)
+        pg.click('#tabs .tab[data-id] >> nth=0')
 
         if scheme == 'light':
             print('presets vs CLI:')
@@ -90,13 +91,15 @@ with sync_playwright() as pw:
 
             print('editing:')
             pg.click('.preset[data-id="customer"]'); settle(pg)
-            before = pg.inner_text('#files .size >> nth=0')
+            before = pg.inner_text('#out-size')
             pg.check('[data-action=group][data-id=imu]'); settle(pg)
-            after = pg.inner_text('#files .size >> nth=0')
+            after = pg.inner_text('#out-size')
             check(before != after, f'turning on IMU group changes output size ({before} -> {after})')
-            check(pg.is_visible('#modified') and 'Changed from Customer' in pg.inner_text('#modified'), 'shows "changed from preset"')
+            check(pg.is_visible('#modified') and 'Edited from Customer' in pg.inner_text('#modified'), 'shows "edited from preset"')
+            pg.click('[data-pane=params]')
             pg.check('[data-action=pgroup][data-id=GPS]'); settle(pg)
-            txt = pg.text_content('#files details >> nth=0')
+            pg.click('[data-pane=data]')
+            txt = pg.text_content('#review')
             check('GPS_TYPE' in txt and 'ATC_RAT' not in txt, 'GPS parameter group added, tuning params not')
             pg.fill('#preset-name', 'Test preset')
             pg.click('[data-action=save-preset]')
@@ -105,7 +108,7 @@ with sync_playwright() as pw:
             pg.reload()
             check(pg.locator('.preset[data-id="custom:test-preset"]').count() == 1, 'saved preset survives reload')
             pg.set_input_files('#file', [fixture])
-            pg.wait_for_function("document.querySelectorAll('#files [data-action=download]').length == 1", timeout=60000)
+            pg.wait_for_function("document.querySelectorAll('#tabs .tab[data-id]').length == 1", timeout=60000)
             settle(pg)
             p2, n2 = download_first(pg)
             check(md5(p1) == md5(p2) and n2.endswith('_test-preset.bin'), f'saved preset reproduces the same output ({n2})')
@@ -121,6 +124,7 @@ with sync_playwright() as pw:
         if shots:
             os.makedirs(shots, exist_ok=True)
             pg.click('[data-action=toggle-open][data-key="g:gps"]')
+            pg.click('[data-action=toggle-open][data-key="g:board"]')
             pg.screenshot(path=os.path.join(shots, f'app_{scheme}.png'), full_page=True)
         check(not errors, f'{scheme}: no page errors {errors[:3]}')
         check(not foreign, f'{scheme}: no requests outside the app {foreign[:3]}')
@@ -130,7 +134,7 @@ with sync_playwright() as pw:
         pg = b.new_page(viewport={'width': 390, 'height': 900})
         pg.goto(URL)
         pg.set_input_files('#file', [fixture])
-        pg.wait_for_selector('#files [data-action=download]', timeout=60000)
+        pg.wait_for_selector('#panel [data-action=download]', timeout=60000)
         settle(pg)
         pg.screenshot(path=os.path.join(shots, 'app_mobile.png'), full_page=True)
         check(pg.evaluate('document.documentElement.scrollWidth') <= 390, 'mobile: no horizontal scroll')
