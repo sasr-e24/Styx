@@ -112,7 +112,9 @@
       size += SIZE[ch];
     }
     ok = ok && size + 3 === len;
-    const inst = INST_COLS.map(c => cols.indexOf(c)).find(i => i >= 0);
+    // Instance column: an integer column named I/Inst/Instance. (PIDx also has a column
+    // "I", but it is the integrator, a float.)
+    const inst = INST_COLS.map(c => cols.indexOf(c)).find(i => i >= 0 && 'bBhHM'.includes(format[i]));
     return { name, len, format, cols, offs, ok, colStr, inst: inst === undefined ? -1 : inst, group: groupOf(name) };
   }
 
@@ -144,12 +146,13 @@
     const params = (p.params || []).filter(Boolean).map(globToRe);
     const textRe = (p.text || []).filter(Boolean).map(safeRe);
     const texts = new Set(p.texts || []);
+    const textEx = (p.textExclude || []).filter(Boolean).map(safeRe);
     return {
       groups: p.groups || {},
       primary: p.primary !== false,
       messages: p.messages || {},
       paramOn: (name) => params.some(r => r.test(name)),
-      textOn: (t) => texts.has(t) || textRe.some(r => r.test(t)),
+      textOn: (t) => texts.has(t) || (textRe.some(r => r.test(t)) && !textEx.some(r => r.test(t))),
       anyParams: params.length > 0,
       anyText: textRe.length > 0 || texts.size > 0,
     };

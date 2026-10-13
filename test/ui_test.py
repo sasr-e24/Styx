@@ -82,7 +82,7 @@ with sync_playwright() as pw:
 
         if scheme == 'light':
             print('presets vs CLI:')
-            for preset in ('customer', 'customer-plus', 'gps-vendor', 'partner'):
+            for preset in ('customer', 'customer-plus', 'gps-vendor', 'partner', 'no-params'):
                 pg.click(f'.preset[data-id="{preset}"]')
                 settle(pg)
                 path, name = download_first(pg)

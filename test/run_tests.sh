@@ -25,7 +25,7 @@ check() {   # check LOG PRESET [extra verify args]
 
 for LOG in test/fixture.bin "$@"; do
   echo "=== $LOG"
-  for P in customer customer-plus gps-vendor partner; do check "$LOG" "$P" --secret CubeOrange; done
+  for P in customer customer-plus gps-vendor partner no-params; do check "$LOG" "$P" --secret CubeOrange; done
   if [ "$LOG" != test/fixture.bin ]; then
     python3 test/make_hostile.py "$LOG" "$TMP/hostile.bin" > /dev/null
     echo "  hostile copy (second GPS, second battery, junk with secret text):"

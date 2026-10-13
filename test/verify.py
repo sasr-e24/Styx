@@ -82,7 +82,17 @@ def main():
     special('MSG', 'Message', texts)
 
     # leak scan
-    kept_strings = params | texts
+    # Format metadata in the output (unit labels, column names) is generic, not a leak.
+    # Text fields of messages the policy keeps on purpose (e.g. STAK thread names) are not leaks either.
+    meta = set()
+    for m in out:
+        if m.get_type() == 'UNIT':
+            meta.add(m.Label)
+        elif m.get_type() == 'FMT':
+            meta.update([m.Name, m.Format, m.Columns])
+        elif m.get_type() in msgs:
+            meta.update(v for v in (getattr(m, f) for f in m.get_fieldnames()) if isinstance(v, str))
+    kept_strings = params | texts | meta
     secrets = set(secrets_extra)
     for m in orig:
         t = m.get_type()

@@ -37,11 +37,11 @@
       reveals: 'Voltage and cells give pack configuration; current gives power draw.',
       names: ['BAT', 'BCL', 'CURR', 'BAT2'] },
     { id: 'control', label: 'Controller and tuning',
-      about: 'PID loops, position/velocity controllers, TECS, autotune.',
+      about: 'PID loops, position/velocity controllers, TECS, VTOL controllers, autotune.',
       reveals: 'Tuning gains in effect and control performance.',
-      names: ['RATE', 'CTUN', 'NTUN', 'QTUN', 'TECS', 'TEC2', 'ANG', 'ATUN', 'ATDE', 'ATRP', 'AETR',
-              'GUIP', 'GUIA', 'CTRL', 'TSIT', 'WVNE', 'LOIT', 'DFLT', 'LDET', 'TRAN', 'SURF'],
-      re: /^(PID|PSC|PSO)/ },
+      names: ['RATE', 'CTUN', 'NTUN', 'QTUN', 'TECS', 'TEC2', 'TEC3', 'ANG', 'ATUN', 'ATDE', 'ATRP', 'AETR',
+              'ATSC', 'QPOS', 'GUIP', 'GUIA', 'CTRL', 'TSIT', 'WVNE', 'LOIT', 'DFLT', 'LDET', 'TRAN', 'SURF'],
+      re: /^(PID|PIQ|PSC|PSO)/ },
     { id: 'propulsion', label: 'Motors and ESCs',
       about: 'Motor outputs, ESC telemetry, RPM, engine data.',
       reveals: 'Thrust margin, ESC model and motor health.',
@@ -50,7 +50,7 @@
     { id: 'rc', label: 'RC input',
       about: 'Pilot stick inputs and link quality.',
       reveals: 'RC system and pilot inputs.',
-      names: ['RSSI'],
+      names: ['RSSI', 'AUXF'],
       re: /^RCI/ },
     { id: 'imu', label: 'IMU and vibration',
       about: 'Accelerometers, gyros, vibration levels, FFT and notch data.',
@@ -67,11 +67,18 @@
       reveals: 'Navigation filter tuning and sensor health.',
       names: ['AHR2', 'DCM', 'EAHR', 'RAD'],
       re: /^(XK|NK)/ },
-    { id: 'system', label: 'System and identity',
-      about: 'Firmware version and board, CPU load, serial ports, MAVLink, errors, simulator.',
-      reveals: 'Board type, firmware build, failures, internal configuration.',
-      names: ['VER', 'PM', 'UART', 'MAV', 'MAVC', 'DSF', 'DU32', 'D32', 'DSTL', 'ERR', 'MCU', 'POWR',
-              'RTC', 'SIM', 'SIM2', 'SITL', 'LOG', 'SCR', 'PRTN', 'MON', 'CAND'] },
+    { id: 'board', label: 'Board power and health',
+      about: 'Board 5V and servo rail voltages, power flags, MCU temperature and voltage, CPU load, IMU heater.',
+      reveals: 'Power rail quality and how loaded the flight controller is.',
+      names: ['POWR', 'MCU', 'PM', 'DSF', 'HEAT'] },
+    { id: 'links', label: 'Links and buses',
+      about: 'CAN bus statistics, serial port data rates, MAVLink traffic and commands, time sync.',
+      reveals: 'Which ports and buses are used and how busy they are.',
+      names: ['CANS', 'CAND', 'UART', 'MAV', 'MAVC', 'TSYN'] },
+    { id: 'system', label: 'Firmware identity and errors',
+      about: 'Firmware version and board type, thread list, subsystem errors and failsafes, scripting, simulator, debug.',
+      reveals: 'Board type, firmware build, failures.',
+      names: ['VER', 'ERR', 'STAK', 'DU32', 'D32', 'DSTL', 'RTC', 'SIM', 'SIM2', 'SITL', 'LOG', 'SCR', 'PRTN', 'MON'] },
   ];
 
   // Never written to the output, whatever the policy says.
@@ -102,6 +109,8 @@
    *   messages: { NAME: { cols: '*' | [..], primary: bool } | false }  per-message override
    *   params:   ['GPS*', 'EK3_SRC1_YAW']  parameter name globs ('*' = any characters)
    *   text:     ['^GPS']  regexes (case-insensitive) for text messages to keep
+   *   textExclude: regexes; a line matching one is dropped even if `text` matches it
+   *                (exact lines ticked in the app are always kept)
    */
   const PRESETS = [
     { id: 'customer', label: 'Customer',
@@ -126,23 +135,34 @@
         params: [], text: [],
       } },
     { id: 'gps-vendor', label: 'GPS vendor',
-      about: 'All GPS data from every receiver, position, heading, GPS parameters and GPS text messages.',
+      about: 'All GPS data, position, heading, board power, battery, CAN and serial stats, errors, GPS parameters and GPS text.',
       policy: {
         groups: { gps: true }, primary: false,
         messages: {
-          POS: { cols: '*' }, ORGN: { cols: '*' }, MODE: { cols: '*' }, EV: { cols: '*' },
-          ARM: { cols: ARM_STATE }, ATT: { cols: ATT_ACTUAL },
+          POWR: { cols: '*' }, MCU: { cols: '*' }, POS: { cols: '*' }, ORGN: { cols: '*' }, MODE: { cols: '*' }, EV: { cols: '*' },
+          ARM: { cols: ARM_STATE }, ATT: { cols: ATT_ACTUAL }, BAT: { cols: '*' },
+          CANS: { cols: '*' }, UART: { cols: '*' }, ERR: { cols: '*' },
         },
-        params: ['GPS*', 'EK3_SRC*'],
+        params: ['GPS*', 'EK3_SRC*', 'CAN_*'],
         text: ['gps', 'u-?blox', 'rtk', 'septentrio', 'unicore', 'nmea', 'trimble', 'novatel', 'moving ?base',
-               '^Ardu[A-Za-z]* V\\d'],
+               'dronecan', '^Ardu[A-Za-z]* V\\d'],
       } },
     { id: 'partner', label: 'Trusted partner',
-      about: 'All flight data. Parameters, text messages, firmware and board identity are still removed.',
+      about: 'All flight data and board power. No parameters, text, links, firmware identity or unknown messages.',
       policy: {
         groups: { position: true, gps: true, flight: true, mission: true, attitude: true, power: true,
-                  control: true, propulsion: true, rc: true, imu: true, sensors: true, estimator: true },
+                  control: true, propulsion: true, rc: true, imu: true, sensors: true, estimator: true, board: true },
         primary: false, messages: {}, params: [], text: [],
+      } },
+    { id: 'no-params', label: 'Everything but parameters',
+      about: 'Whole log except parameters, autotune gains, embedded files and text lines that name parameters or tuning.',
+      policy: {
+        groups: Object.fromEntries(GROUPS.map(g => [g.id, true]).concat([['other', true]])),
+        primary: false,
+        messages: { ATUN: false, ATDE: false },
+        params: [],
+        text: ['.'],
+        textExclude: ['\\btun', 'tune', 'gain', '\\b[A-Z][A-Z0-9]*_[A-Z0-9_]+\\b'],
       } },
   ];
 

@@ -17,8 +17,9 @@ open `app/index.html` directly from a checkout.
 |---|---|
 | Customer | GPS track and speed (first receiver, no yaw), position, height, modes, arm/disarm, events, mission |
 | Customer, detailed | Customer, plus roll/pitch/yaw (no setpoints) and pack voltage, current, mAh, % |
-| GPS vendor | Every GPS message from every receiver, all columns; position; attitude; `GPS*` and `EK3_SRC*` parameters; text lines about GPS, receivers, RTK, and the firmware version |
-| Trusted partner | All flight data groups. No parameters, text messages, firmware/board identity or system data |
+| GPS vendor | Every GPS message from every receiver, all columns; position; attitude; board power (POWR, MCU); battery; CAN bus and serial port stats; errors; `GPS*`, `EK3_SRC*` and `CAN_*` parameters; text lines about GPS, receivers, RTK, DroneCAN, and the firmware version |
+| Trusted partner | All flight data groups and board power. No parameters, text messages, links, firmware/board identity or unknown messages |
+| Everything but parameters | The whole log, including unknown/custom messages, except parameters, autotune gain records (ATUN/ATDE), embedded files, and text lines that contain a parameter-style name or mention tuning or gains |
 
 Every preset can be edited in the app: switch data groups or single messages on or
 off, pick columns, keep or drop extra sensor instances, tick parameter groups or

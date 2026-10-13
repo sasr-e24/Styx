@@ -44,13 +44,17 @@ DEFS = [
     ('ARM', 'QBIBB', 'TimeUS,ArmState,ArmChecks,Forced,Method', None, None),
     ('CMD', 'QHHHffffLLfB', 'TimeUS,CTot,CNum,CId,Prm1,Prm2,Prm3,Prm4,Lat,Lng,Alt,Frame', None, None),
     ('ERR', 'QBB', 'TimeUS,Subsys,ECode', None, None),
+    ('POWR', 'QffHHB', 'TimeUS,Vcc,VServo,Flags,AccFlags,Safety', None, None),
+    ('MCU', 'Qffff', 'TimeUS,MTemp,MVolt,MVmin,MVmax', None, None),
+    ('CANS', 'QBIIIIIIIII', 'TimeUS,I,T,Trej,Tov,Tto,Tab,R,Rov,Rer,Bo', None, None),
+    ('FGS', 'Qfff', 'TimeUS,Gx,Gy,Gz', None, None),
 ]
 
 PARAMS = [('ATC_RAT_RLL_P', 0.135), ('ATC_RAT_PIT_P', 0.142), ('INS_HNTCH_FREQ', 82.0),
           ('MOT_THST_HOVER', 0.31), ('SERIAL3_PROTOCOL', 5), ('GPS_TYPE', 17), ('GPS_TYPE2', 18),
           ('GPS_AUTO_CONFIG', 1), ('GPS_POS1_X', 0.21), ('GPS_POS2_X', -0.21), ('GPS1_RATE_MS', 200),
           ('EK3_SRC1_YAW', 2), ('EK3_SRC1_POSXY', 3), ('BATT_CAPACITY', 22000), ('FRAME_CLASS', 1)]
-TEXTS = ['ArduCopter V4.6.3 (3fc7011a)', 'CubeOrangePlus 0034001B3132510F33383538',
+TEXTS = ['QuikTune: ATC_RAT_RLL_P 0.135', 'Autotune: Success', 'ArduCopter V4.6.3 (3fc7011a)', 'CubeOrangePlus 0034001B3132510F33383538',
          'ChibiOS: 6a85082c', 'Frame: QUAD/X', 'GPS 1: detected u-blox at 230400 baud',
          'GPS 2: detected u-blox at 230400 baud', 'u-blox 1 HW: 00190000 SW: EXT CORE 1.00 (61b2dd)',
          'IMU0: fast sampling enabled 8.0kHz', 'RCOut: PWM:1-12', 'GPS 1: specified as UBLOX',
@@ -116,6 +120,12 @@ def main(path):
             msg('BAT', tt, inst, 48.1, 49.0, 42.0, k * 1.2, k * 50.0, 3200, 0.004, 90 - k // 20, 1, 0)
             msg('IMU', tt, inst, 0.01, 0.02, 0.0, 0.1, 0.0, -9.8, 0, 0, 45.0, 1, 1, 1000, 1000)
         msg('VIBE', tt, 0, 12.0, 14.0, 20.0, 0)
+        if k % 10 == 0:
+            msg('POWR', tt, 5.12, 0.02, 3, 0, 1)
+            msg('MCU', tt, 48.0, 3.3, 3.29, 3.31)
+            msg('FGS', tt, 0.1, 0.2, 0.3)
+            for inst in (0, 1):
+                msg('CANS', tt, inst, k, 0, 0, 0, 0, k * 2, 0, 0, 0)
         msg('RCOU', tt, *([1550] * 4 + [1000] * 10))
         msg('PIDR', tt, 1.0, 0.9, 0.1, 0.05, 0.01, 0.002, 0.0, 1.0, 0)
         msg('XKF1', tt, 0, 120, -40, 9000, 10.4, 0.1, -0.1, 0.0, 1.0, 2.0, -alt, 1, 1, 1, 0)
